@@ -20,3 +20,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     Settings.h
+
+DISTFILES += \
+    Settings.json

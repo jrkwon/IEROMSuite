@@ -13,8 +13,12 @@ IEROM_NAMESPACE_START
 #define kDebug                       true
 
 #define kIEROMSuitePathEnv           "IEROM_SUITE_DIR"
-#define kSettingsJsonFileRelPath     "/Settings/Settings.json"
 
+#if kDebug
+#define kSettingsJsonFileRelPath     "/Settings/Settings.json"
+#else
+#define kSettingsJsonFileRelPath     "/bin/Settings.json"
+#endif
 // enums
 enum ErrorCode { Error = false, Success = true };
 enum YesNo { No = false, Yes = true };
