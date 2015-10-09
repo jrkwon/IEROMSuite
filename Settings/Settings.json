@@ -35,42 +35,42 @@
         "PartialPath": "bin",
         "PathPrefix": ""
       },
-      "TissueAreaDetector": {
+      "SliceAreaDetector": {
         "Version": {
           "Major": 1,
           "Minor": 0
         },
-	"Name": "Detector",
+        "Name": "Detector",
         "RawDataInfoJson": "RawDataInfo.json",
         "TemplateFileName": "Template",
         "ColumnNumberDigits": 5,
         "RightEdgeWindowSize": 30
       },
-      "TissueAreaCorrector": {
+      "SliceAreaCorrector": {
         "Version": {
           "Major": 1,
           "Minor": 0
         },
-	"Name": "Corrector",
+        "Name": "Corrector",
         "ImageChuckThreshold": 10,
         "MaxRightEdgeDifference": 15,
         "MaxConsecutiveWrongImages": 10,
         "DefaultFactorForWindowSize": 2,
         "MaxOutlierImages": 5
       },
-      "TissueAreaCropper": {
+      "SliceAreaCropper": {
         "Version": {
           "Major": 1,
           "Minor": 0
         },
-	"Name": "Cropper"
+        "Name": "Cropper"
       },
       "IntensityNormalizer": {
         "Version": {
           "Major": 1,
           "Minor": 0
         },
-	"Name": "Normalizer",
+        "Name": "Normalizer",
         "NormalizedMinIntensity": 0,
         "NormalizedMaxIntensity": 140
       },
@@ -79,7 +79,7 @@
           "Major": 1,
           "Minor": 0
         },
-	"Name": "Sticher",
+        "Name": "Sticher",
         "InfoFileName": "MergerInfo.txt",
         "InfoFormat": "i%05dz%.4f.txt",
         "InvertImageFlag": "i:"
@@ -89,14 +89,14 @@
           "Major": 1,
           "Minor": 0
         },
-	"Name": "SticherInfo"
+        "Name": "SticherInfo"
       },
       "MultiLayerComposer": {
         "Version": {
           "Major": 1,
           "Minor": 0
         },
-	"Name": "Composer",
+        "Name": "Composer",
         "IndexedImageFileNameFormat": "iNNNNN",
         "ZPosFileNameFormat": "Z.ZZZZ",
         "ComposerUnitDepth": 5

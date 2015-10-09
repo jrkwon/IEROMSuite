@@ -71,7 +71,7 @@ public:
     QString name;
 };
 
-class TissueAreaDetector : public VersionName {
+class SliceAreaDetector : public VersionName {
 public:
     void read(const QJsonObject &json);
 
@@ -82,7 +82,7 @@ public:
     quint16 rightEdgeWindowSize;
 };
 
-class TissueAreaCorrector : public VersionName {
+class SliceAreaCorrector : public VersionName {
 public:
     void read(const QJsonObject &json);
 
@@ -94,7 +94,7 @@ public:
     quint8 maxOutlierImages;
 };
 
-class TissueAreaCropper  : public VersionName {
+class SliceAreaCropper  : public VersionName {
 public:
     void read(const QJsonObject &json);
 
@@ -147,9 +147,9 @@ public:
     QString partialPath;
     QString pathPrefix;
 
-    TissueAreaDetector detector;
-    TissueAreaCorrector corrector;
-    TissueAreaCropper cropper;
+    SliceAreaDetector detector;
+    SliceAreaCorrector corrector;
+    SliceAreaCropper cropper;
     IntensityNormalizer normalizer;
     SliceSticherInfo sticherInfo;
     SliceSticher sticher;

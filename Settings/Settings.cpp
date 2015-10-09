@@ -45,16 +45,16 @@ void ProcessInfo::read(const QJsonObject &json)
     partialPath = jsonDebugRelease["PartialPath"].toString();
     pathPrefix = jsonDebugRelease["PathPrefix"].toString();
 
-    detector.read(json["TissueAreaDetector"].toObject());
-    corrector.read(json["TissueAreaCorrector"].toObject());
-    cropper.read(json["TissueAreaCropper"].toObject());
+    detector.read(json["SliceAreaDetector"].toObject());
+    corrector.read(json["SliceAreaCorrector"].toObject());
+    cropper.read(json["SliceAreaCropper"].toObject());
     normalizer.read(json["IntensityNormalizer"].toObject());
     sticherInfo.read(json["SliceSticherInfo"].toObject());
     sticher.read(json["SliceSticher"].toObject());
     composer.read(json["MultiLayerComposer"].toObject());
 }
 
-void TissueAreaDetector::read(const QJsonObject &json)
+void SliceAreaDetector::read(const QJsonObject &json)
 {
     QJsonObject versionJson = json["Version"].toObject();
     version.major = versionJson["Major"].toInt();
@@ -67,7 +67,7 @@ void TissueAreaDetector::read(const QJsonObject &json)
     rightEdgeWindowSize = json["RightEdgeWindowSize"].toInt();
 }
 
-void TissueAreaCorrector::read(const QJsonObject &json)
+void SliceAreaCorrector::read(const QJsonObject &json)
 {
     QJsonObject versionJson = json["Version"].toObject();
     version.major = versionJson["Major"].toInt();
@@ -81,7 +81,7 @@ void TissueAreaCorrector::read(const QJsonObject &json)
     maxOutlierImages = json["MaxOutlierImages"].toInt();
 }
 
-void TissueAreaCropper::read(const QJsonObject &json)
+void SliceAreaCropper::read(const QJsonObject &json)
 {
     QJsonObject versionJson = json["Version"].toObject();
     version.major = versionJson["Major"].toInt();
