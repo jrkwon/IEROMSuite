@@ -5,7 +5,7 @@
 #include <QString>
 #include <QVector>
 
-#define IEROM_NAMESPACE_START namespace IEROM {
+#define IEROM_NAMESPACE_START namespace ierom {
 #define IEROM_NAMESPACE_END   }
 
 IEROM_NAMESPACE_START
@@ -19,9 +19,15 @@ IEROM_NAMESPACE_START
 #else
 #define kSettingsJsonFileRelPath     "/bin/Settings.json"
 #endif
+
 // enums
-enum ErrorCode { Error = false, Success = true };
 enum YesNo { No = false, Yes = true };
+enum Result { Fail = false, Success = true};
+
+#define SETTINGS_NAMESPACE_START namespace settings {
+#define SETTINGS_NAMESPACE_END   }
+
+SETTINGS_NAMESPACE_START
 
 struct Version {
     int major;
@@ -169,6 +175,8 @@ public:
     DirectoryName directoryName;
     ProcessInfo processInfo;
 };
+
+SETTINGS_NAMESPACE_END
 
 IEROM_NAMESPACE_END
 

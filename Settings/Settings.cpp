@@ -7,6 +7,8 @@
 
 IEROM_NAMESPACE_START
 
+SETTINGS_NAMESPACE_START
+
 void SystemInfo::read(const QJsonObject &json)
 {
     author = json["Author"].toString();
@@ -163,5 +165,7 @@ void Settings::read(const QJsonObject &json)
     directoryName.read(ierom["DirectoryName"].toObject());
     processInfo.read(ierom["ProcessInfo"].toObject());
 }
+
+SETTINGS_NAMESPACE_END
 
 IEROM_NAMESPACE_END

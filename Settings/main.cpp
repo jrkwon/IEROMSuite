@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    IEROM::Settings settings;
+    ierom::settings::Settings settings;
     settings.loadSettings();
 
     return a.exec();
