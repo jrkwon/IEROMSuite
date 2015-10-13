@@ -15,6 +15,7 @@
       "MaxPixelIntensity": 255
     },
     "DirectoryName": {
+      "Detected": "Detected",
       "Cropped": "Cropped",
       "Normalized": "Normalized",
       "Stiched": "Stiched",
@@ -26,6 +27,7 @@
     },
     "ProcessInfo": {
       "MaxProcessWaitTime": 1800000,
+      "GlobalSharedMemoryKey": "IEROMSuiteGlobalSharedMemory",
       "ProcessExt": ".exe",
       "Debug": {
         "PartialPath": "-Desktop_Qt_5_5_0_MinGW_32bit-Debug/debug",

@@ -150,6 +150,7 @@ public:
 
 public:
     long maxProcessWaitTime;
+    QString globalSharedMemoryKey;
     QString processExt;
     QString partialPath;
     QString pathPrefix;

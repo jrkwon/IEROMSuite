@@ -41,6 +41,7 @@ void DirectoryName::read(const QJsonObject &json)
 void ProcessInfo::read(const QJsonObject &json)
 {
     maxProcessWaitTime = json["MaxProcessWaitTime"].toInt();
+    globalSharedMemoryKey = json["GlobalSharedMemoryKey"].toString();
     processExt = json["ProcessExt"].toString();
     QJsonObject jsonDebugRelease;
 
