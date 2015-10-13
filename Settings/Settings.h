@@ -61,6 +61,7 @@ public:
     void read(const QJsonObject &json);
 
 public:
+    QString detected;
     QString cropped;
     QString normalized;
     QString sticherInfo;

@@ -27,6 +27,7 @@ void RawImageProp::read(const QJsonObject &json)
 
 void DirectoryName::read(const QJsonObject &json)
 {
+    detected = json["Detected"].toString();
     cropped = json["Cropped"].toString();
     normalized = json["Normalized"].toString();
     sticherInfo = json["SticherInfo"].toString();
