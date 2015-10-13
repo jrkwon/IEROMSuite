@@ -4,11 +4,13 @@
 
 IEROM_NAMESPACE_START
 
-SliceAreaDetector::SliceAreaDetector(QString rawFileName, int sliceWidth, QString templateName)
+SliceAreaDetector::SliceAreaDetector(QString rawFileName, int sliceWidth,
+                                     QString templateName, QString sharedMemoryKeyName)
 {
     this->rawFileName = rawFileName;
     this->sliceWidth = sliceWidth;
     this->sliceRightEdgeTemplate.name = templateName;
+    this->sharedMemoryKeyName = sharedMemoryKeyName;
 
     this->sliceAreaPosition.x = -1;
     this->sliceAreaPosition.y = -1;
@@ -100,6 +102,28 @@ void SliceAreaDetector::reLight(int direction,
     }
 }
 
+ImageType::ConstPointer SliceAreaDetector::readFile(QString fileName)
+{
+    // new for itk 4.8
+    itk::JPEGImageIOFactory::RegisterOneFactory();
+
+    ReaderType::Pointer reader = ReaderType::New();
+    reader->SetFileName(fileName.toStdString().c_str());
+
+    try
+    {
+        reader->Update();
+    }
+    catch( itk::ExceptionObject & err )
+    {
+        std::cerr << "ExceptionObject caught !" << std::endl;
+        std::cerr << err << std::endl;
+        return NULL;
+    }
+
+    return reader->GetOutput();
+}
+
 Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
 {
     //    if(QFile::exists(strSrcImage) != true)
@@ -107,23 +131,9 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
     //        qDebug() << "Error: " << qPrintable(fileName) << "does not exist.";
     //    }
 
-    ///////////////////////////////
-    // read the template image file
-
-    ReaderType::Pointer templateReader = ReaderType::New();
-    templateReader->SetFileName(this->sliceRightEdgeTemplate.name.toStdString().c_str());
-    try
-    {
-        templateReader->Update();
-    }
-    catch( itk::ExceptionObject & err )
-    {
-        std::cerr << "ExceptionObject caught !" << std::endl;
-        std::cerr << err << std::endl;
-        return Fail;
-    }
-    // get template image width and height;
-    ImageType::ConstPointer templateImage = templateReader->GetOutput();
+    //////////////////////////////////////////////////////////////////////////
+    // read the template image file & get template image width and height
+    ImageType::ConstPointer templateImage = readFile(this->sliceRightEdgeTemplate.name);
     ImageType::SizeType templateImageSize = templateImage->GetLargestPossibleRegion().GetSize();
     this->sliceRightEdgeTemplate.width = templateImageSize[0];
     this->sliceRightEdgeTemplate.height = templateImageSize[1];
@@ -134,22 +144,7 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
 
     ///////////////////////////////////////////
     // Read the image to detect a slice region
-
-    ReaderType::Pointer reader = ReaderType::New();
-    reader->SetFileName(this->rawFileName.toStdString().c_str());
-
-    try
-    {
-        reader->Update();
-    }
-    catch( itk::ExceptionObject & err )
-    {
-        std::cerr << "ExceptionObject caught !" << std::endl;
-        std::cerr << err << std::endl;
-        return Fail;
-    }
-
-    ImageType::ConstPointer inputImage = reader->GetOutput();
+    ImageType::ConstPointer inputImage = readFile(this->rawFileName);
     ImageType::SizeType imageSize = inputImage->GetLargestPossibleRegion().GetSize();
     int imageWidth = imageSize[0];
 
@@ -177,7 +172,7 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
         desiredRegion.SetIndex(start);
         FilterType::Pointer filter = FilterType::New();
         filter->SetRegionOfInterest(desiredRegion);
-        filter->SetInput(reader->GetOutput());
+        filter->SetInput(inputImage);
 
         try
         {
@@ -241,7 +236,7 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
         //////////////////////////////////////////
         //ConstIteratorType searchIt(filter->GetOutput(), filter->GetOutput()->GetRequestedRegion());
         ConstIteratorType searchIt(outputImage, outputImage->GetRequestedRegion());
-        ConstIteratorType templateIt(templateReader->GetOutput(), templateReader->GetOutput()->GetRequestedRegion());
+        ConstIteratorType templateIt(templateImage, templateImage->GetRequestedRegion());
 
         sad = sumOfAbsoluteDifferences(searchIt, templateIt);
         if((minSad == -1) || (sad < minSad))
@@ -257,11 +252,13 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
     rightEdgeX = minSadX +  this->sliceRightEdgeTemplate.width/2;
     int startX = rightEdgeX - this->sliceWidth;
 
-    displayMessage(QString("startX: %1").arg(startX));
+    //displayMessage(QString("startX: %1").arg(startX));
 
     sliceAreaPosition.x = startX;
-    // TODO
-    sliceAreaPosition.y = 0;
+    // TODO: registration for y axis may be required.
+    sliceAreaPosition.y = 0; // always 0 for now.
+
+    saveToSharedMemory(sliceAreaPosition);
 
     return Success;
 }
@@ -279,16 +276,27 @@ void SliceAreaDetector::showProgress()
     std::cout << verb[i++] << "\r";
 }
 
-void SliceAreaDetector::saveSliceArea()
+void SliceAreaDetector::saveToSharedMemory(Coord sliceAreaPosition)
 {
+    // -----------------------------------------------------------------------
+    // Note: QSharedMemory doesn't work without manually setting a key in
+    // Windows 10.
+    sharedMemory.setKey(this->sharedMemoryKeyName);
+
+    if (sharedMemory.isAttached())
+        sharedMemory.detach();
+
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
     QDataStream out(&buffer);
-    out << this->sliceAreaPosition.x;
+    out << sliceAreaPosition.x;
+    out << sliceAreaPosition.y;
+
     int size = buffer.size();
 
     if (!sharedMemory.create(size)) {
         qDebug() << "Error: Unable to create shared memory segment.";
+        qDebug() << "       " << sharedMemory.errorString();
         return;
     }
     sharedMemory.lock();
@@ -296,6 +304,13 @@ void SliceAreaDetector::saveSliceArea()
     const char *from = buffer.data().data();
     memcpy(to, from, qMin(sharedMemory.size(), size));
     sharedMemory.unlock();
+
+    QString msg;
+    if(sliceAreaPosition.x == -1 || sliceAreaPosition.y == -1)
+        msg = QString("No slice area is found:");
+    else
+        msg = QString("x: %1, y: %2").arg(sliceAreaPosition.x).arg(sliceAreaPosition.y);
+    displayMessage(msg);
 }
 
 void SliceAreaDetector::setVerbose(bool isVerbose)
@@ -306,7 +321,7 @@ void SliceAreaDetector::setVerbose(bool isVerbose)
 void SliceAreaDetector::displayMessage(QString message)
 {
     if(isVerbose)
-        std::cout << qPrintable(message) << std::endl;
+        qDebug() << message;
 }
 
 IEROM_NAMESPACE_END

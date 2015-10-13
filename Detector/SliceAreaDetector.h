@@ -6,6 +6,7 @@
 
 ///////////////////////////
 // itk
+#include "itkJPEGImageIOFactory.h"
 #include "itkImageFileReader.h"
 #include "itkImageFileWriter.h"
 #include "itkImageLinearConstIteratorWithIndex.h"
@@ -48,7 +49,7 @@ struct SliceRightEdgeTemplate
 class SliceAreaDetector
 {
 public:
-    SliceAreaDetector(QString rawFileName, int sliceWidth, QString templateName);
+    SliceAreaDetector(QString rawFileName, int sliceWidth, QString templateName, QString sharedMemoryKeyName);
 
     void setVerbose(bool isVerbose);
     Result getSliceAreaPosition(Coord& coord);
@@ -60,14 +61,17 @@ private:
     int sumOfAbsoluteDifferences(
             itk::ImageLinearConstIteratorWithIndex<ImageType> searchIt,
             itk::ImageLinearConstIteratorWithIndex<ImageType> templateIt);
+    void saveToSharedMemory(Coord sliceAreaPosition);
     void showProgress();
-    void saveSliceArea();
     void displayMessage(QString message);
+
+    ImageType::ConstPointer readFile(QString fileName);
 
 private:
     QString rawFileName;
     int sliceWidth;
     SliceRightEdgeTemplate sliceRightEdgeTemplate;
+    QString sharedMemoryKeyName;
     Coord sliceAreaPosition;
     bool isVerbose;
     Params params;
