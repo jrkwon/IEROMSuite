@@ -9,7 +9,7 @@ void TissueSample::read(const QJsonObject &json)
 {
     this->id = json["ID"].toString();
     this->specimen = json["Specimen"].toString();
-    this->organ = json["Orgain"].toString();
+    this->organ = json["Organ"].toString();
     this->stain = json["Stain"].toString();
     this->object = json["Object"].toString();
     this->sectioningPlane = json["Sectioning Plane"].toString();
