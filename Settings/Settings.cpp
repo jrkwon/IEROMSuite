@@ -65,7 +65,7 @@ void SliceAreaDetector::read(const QJsonObject &json)
     version.minor = versionJson["Minor"].toInt();
     name = json["Name"].toString();
 
-    rawDataJsonFileName = json["RawDataJsonFileName"].toString();
+    metadataJsonFileName = json["MetadataJsonFileName"].toString();
     templateFileName = json["TemplateFileName"].toString();
     columNumberDigits = json["ColumnNumberDigits"].toInt();
     rightEdgeWindowSize = json["RightEdgeWindowSize"].toInt();

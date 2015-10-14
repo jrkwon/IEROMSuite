@@ -43,7 +43,7 @@
           "Minor": 0
         },
         "Name": "Detector",
-        "RawDataJsonFileName": "RawData.json",
+        "MetadataJsonFileName": "Metadata.json",
         "TemplateFileName": "Template",
         "ColumnNumberDigits": 5,
         "RightEdgeWindowSize": 30
