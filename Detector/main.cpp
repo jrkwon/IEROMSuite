@@ -4,9 +4,9 @@
 
 // ---------------------------------
 // argv
-// 1. Raw image file name
+// 1. Raw image file path name
 // 2. Slice area width
-// 3. Template file name
+// 3. Template file path name
 // 4. Shared memory key name
 // 5. Options
 //    s: [silence] no message displayed

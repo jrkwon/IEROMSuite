@@ -49,7 +49,7 @@ struct SliceRightEdgeTemplate
 class SliceAreaDetector
 {
 public:
-    SliceAreaDetector(QString rawFileName, int sliceWidth, QString templateName, QString sharedMemoryKeyName);
+    SliceAreaDetector(QString rawFilePath, int sliceWidth, QString templateFilePath, QString sharedMemoryKeyName);
 
     void setVerbose(bool isVerbose);
     Result getSliceAreaPosition(Coord& coord);
@@ -62,13 +62,13 @@ private:
             itk::ImageLinearConstIteratorWithIndex<ImageType> searchIt,
             itk::ImageLinearConstIteratorWithIndex<ImageType> templateIt);
     void saveToSharedMemory(Coord sliceAreaPosition);
-    void showProgress();
+    void showProgress(int start, int end, int current);
     void displayMessage(QString message);
 
-    ImageType::ConstPointer readFile(QString fileName);
+    ImageType::ConstPointer readFile(QString filePath);
 
 private:
-    QString rawFileName;
+    QString rawFilePath;
     int sliceWidth;
     SliceRightEdgeTemplate sliceRightEdgeTemplate;
     QString sharedMemoryKeyName;

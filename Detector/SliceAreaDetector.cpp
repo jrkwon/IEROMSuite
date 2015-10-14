@@ -1,15 +1,16 @@
 #include "SliceAreaDetector.h"
 #include <QBuffer>
 #include <QDataStream>
+#include <QFileInfo>
 
 IEROM_NAMESPACE_START
 
-SliceAreaDetector::SliceAreaDetector(QString rawFileName, int sliceWidth,
-                                     QString templateName, QString sharedMemoryKeyName)
+SliceAreaDetector::SliceAreaDetector(QString rawFilePath, int sliceWidth,
+                                     QString templateFilePath, QString sharedMemoryKeyName)
 {
-    this->rawFileName = rawFileName;
+    this->rawFilePath = rawFilePath;
     this->sliceWidth = sliceWidth;
-    this->sliceRightEdgeTemplate.name = templateName;
+    this->sliceRightEdgeTemplate.name = templateFilePath;
     this->sharedMemoryKeyName = sharedMemoryKeyName;
 
     this->sliceAreaPosition.x = -1;
@@ -102,13 +103,13 @@ void SliceAreaDetector::reLight(int direction,
     }
 }
 
-ImageType::ConstPointer SliceAreaDetector::readFile(QString fileName)
+ImageType::ConstPointer SliceAreaDetector::readFile(QString filePath)
 {
     // new for itk 4.8
     itk::JPEGImageIOFactory::RegisterOneFactory();
 
     ReaderType::Pointer reader = ReaderType::New();
-    reader->SetFileName(fileName.toStdString().c_str());
+    reader->SetFileName(filePath.toStdString().c_str());
 
     try
     {
@@ -144,7 +145,12 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
 
     ///////////////////////////////////////////
     // Read the image to detect a slice region
-    ImageType::ConstPointer inputImage = readFile(this->rawFileName);
+    QFileInfo fiRaw(this->rawFilePath);
+    //QFileInfo fiTemplate(this->sliceRightEdgeTemplate.name);
+    //displayMessage(QString("File: %1, Template: %2").arg(fiRaw.fileName()).arg(fiTemplate.fileName()));
+    displayMessage(QString("--- : File: %1").arg(fiRaw.fileName()));
+
+    ImageType::ConstPointer inputImage = readFile(this->rawFilePath);
     ImageType::SizeType imageSize = inputImage->GetLargestPossibleRegion().GetSize();
     int imageWidth = imageSize[0];
 
@@ -246,8 +252,10 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
             //            qDebug() << "minSad: " << minSad << "minSadX: " << minSadX;
         }
 
-        showProgress();
+        showProgress(imageWidth-size[0], sliceWidth-size[0]/2, x);
     }
+    // to guarantee "100%" displayed.
+    showProgress(imageWidth-size[0], sliceWidth-size[0]/2, sliceWidth-size[0]/2);
 
     rightEdgeX = minSadX +  this->sliceRightEdgeTemplate.width/2;
     int startX = rightEdgeX - this->sliceWidth;
@@ -263,17 +271,22 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
     return Success;
 }
 
-void SliceAreaDetector::showProgress()
+void SliceAreaDetector::showProgress(int start, int end, int current)
 {
     if(!this->isVerbose)
         return;
 
-    char verb[] = "-\\|/";
-    static int i = 0;
+//    char verb[] = "-\\|/";
+//    static int i = 0;
 
-    if(verb[i] == '\0')
-        i = 0;
-    std::cout << verb[i++] << "\r";
+//    if(verb[i] == '\0')
+//        i = 0;
+//    std::cout << verb[i++] << "\r";
+    int range = qAbs(end - start);
+    int progress = qAbs(start-current)/(float)range * 100;
+
+    QString msg = QString("%1%").arg(progress, 3);
+    std::cout << "\r" << msg.toStdString().c_str();
 }
 
 void SliceAreaDetector::saveToSharedMemory(Coord sliceAreaPosition)
@@ -307,9 +320,9 @@ void SliceAreaDetector::saveToSharedMemory(Coord sliceAreaPosition)
 
     QString msg;
     if(sliceAreaPosition.x == -1 || sliceAreaPosition.y == -1)
-        msg = QString("No slice area is found:");
+        msg = QString("\n\tNo slice area is found.\n");
     else
-        msg = QString("x: %1, y: %2").arg(sliceAreaPosition.x).arg(sliceAreaPosition.y);
+        msg = QString("\n\tx: %1, y: %2\n").arg(sliceAreaPosition.x).arg(sliceAreaPosition.y);
     displayMessage(msg);
 }
 
@@ -321,7 +334,7 @@ void SliceAreaDetector::setVerbose(bool isVerbose)
 void SliceAreaDetector::displayMessage(QString message)
 {
     if(isVerbose)
-        qDebug() << message;
+        std::cout << message.toStdString().c_str();
 }
 
 IEROM_NAMESPACE_END
