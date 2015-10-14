@@ -43,7 +43,7 @@
           "Minor": 0
         },
         "Name": "Detector",
-        "RawDataInfoJson": "RawDataInfo.json",
+        "RawDataJson": "RawData.json",
         "TemplateFileName": "Template",
         "ColumnNumberDigits": 5,
         "RightEdgeWindowSize": 30

@@ -83,7 +83,7 @@ public:
     void read(const QJsonObject &json);
 
 public:
-    QString rawDataJson;
+    QString rawDataJsonFileName;
     QString templateFileName;
     quint8 columNumberDigits;
     quint16 rightEdgeWindowSize;

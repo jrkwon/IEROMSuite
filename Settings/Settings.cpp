@@ -65,7 +65,7 @@ void SliceAreaDetector::read(const QJsonObject &json)
     version.minor = versionJson["Minor"].toInt();
     name = json["Name"].toString();
 
-    rawDataInfoJson = json["RawDataInfoJson"].toString();
+    rawDataJsonFileName = json["RawDataJsonFileName"].toString();
     templateFileName = json["TemplateFileName"].toString();
     columNumberDigits = json["ColumnNumberDigits"].toInt();
     rightEdgeWindowSize = json["RightEdgeWindowSize"].toInt();
@@ -142,8 +142,7 @@ bool Settings::loadSettings()
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     QString suiteDir = env.value(kIEROMSuitePathEnv);
     QString jsonFilePath = QDir::cleanPath(suiteDir + kSettingsJsonFileRelPath);
-
-    qDebug() << jsonFilePath;
+    //qDebug() << jsonFilePath;
 
     QFile settingsFile(jsonFilePath);
     if(!settingsFile.open(QIODevice::ReadOnly)) {
