@@ -51,6 +51,6 @@ int main(int argc, char *argv[])
     ierom::Coord sliceStartPosition;
     detector.getSliceAreaPosition(sliceStartPosition);
 
-    return a.exec(); // sliceStartPosition.x; //a.exec();
+    return true; //a.exec(); // sliceStartPosition.x; //a.exec();
 }
 

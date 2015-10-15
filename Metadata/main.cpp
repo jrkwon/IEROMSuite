@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
     QString metadataJsonFileName = settings.processInfo.detector.metadataJsonFileName;
     ierom::Metadata metadata("K:/KESM Data/2008-01-23 Whole mouse brain vasculature", metadataJsonFileName);
-    metadata.loadMetadata();
+    bool res = metadata.loadMetadata();
 
-    return a.exec();
+    return res; //a.exec();
 }

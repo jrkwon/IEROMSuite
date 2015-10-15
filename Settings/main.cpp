@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     ierom::settings::Settings settings;
-    settings.loadSettings();
+    bool res = settings.loadSettings();
 
-    return a.exec();
+    return res; //a.exec();
 }
