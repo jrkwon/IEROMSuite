@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QProcess>
 
+IEROM_NAMESPACE_START
+
 class DetectorController : public QObject
 {
     Q_OBJECT
@@ -24,5 +26,7 @@ public:
     bool isFinished;
     bool isProcessError;
 };
+
+IEROM_NAMESPACE_END
 
 #endif // DETECTORCONTROLLER_H

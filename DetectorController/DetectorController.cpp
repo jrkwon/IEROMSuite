@@ -1,4 +1,7 @@
 #include "DetectorController.h"
+#include <iostream>
+
+IEROM_NAMESPACE_START
 
 DetectorController::DetectorController()
 {
@@ -57,3 +60,5 @@ void DetectorController::processError(QProcess::ProcessError error)
     }
     isProcessError = isFinished = true;
 }
+
+IEROM_NAMESPACE_END

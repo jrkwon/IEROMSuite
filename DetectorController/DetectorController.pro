@@ -17,13 +17,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     DetectorController.cpp \
-    ../RawData/RawData.cpp \
+    ../Metadata/Metadata.cpp \
     ../Settings/Settings.cpp
 
 HEADERS += \
     DetectorController.h \
-    ../RawData/RawData.h \
+    ../Metadata/Metadata.h \
     ../Settings/Settings.h
 
 INCLUDEPATH += $$PWD/../Settings \
-    $$PWD/../RawData
+    $$PWD/../Metadata
