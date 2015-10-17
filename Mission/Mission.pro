@@ -15,4 +15,13 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    Mission.cpp
+
+HEADERS += \
+    Mission.h
+
+DISTFILES += \
+    Mission.json
+
+INCLUDEPATH += $$PWD/../Settings
