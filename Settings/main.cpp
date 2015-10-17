@@ -12,7 +12,10 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     ierom::settings::Settings settings;
-    bool res = settings.loadSettings();
+    //bool res = settings.loadSettings();
 
-    return res; //a.exec();
+    // test printout
+    qDebug("Sysinfo - Author: %s", qPrintable(settings.systemInfo.author));
+
+    return true; //res; //a.exec();
 }

@@ -137,6 +137,11 @@ void MultiLayerComposer::read(const QJsonObject &json)
     composerUnitDepth = json["ComposerUnitDepth"].toInt();
 }
 
+Settings::Settings()
+{
+    isLoaded = loadSettings();
+}
+
 bool Settings::loadSettings()
 {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();

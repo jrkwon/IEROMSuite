@@ -167,8 +167,12 @@ public:
 class Settings
 {
 public:
-    bool loadSettings();
+    Settings();
 
+private:
+    bool isLoaded;
+
+    bool loadSettings();
     void read(const QJsonObject &json);
 
 public:
