@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include "Metadata.h"
+#include "Mission.h"
 
 //////////////////////////////////////////////////////////////////////////////
 /// \brief main This is only for testing Metadata class.
@@ -15,8 +16,16 @@ int main(int argc, char *argv[])
     settings.loadSettings();
 
     QString metadataJsonFileName = settings.processInfo.detector.metadataJsonFileName;
-    ierom::Metadata metadata("K:/KESM Data/2008-01-23 Whole mouse brain vasculature", metadataJsonFileName);
-    bool res = metadata.loadMetadata();
+    ierom::Mission mission;
+    ierom::Metadata metadata(mission.rawImageDirectory, metadataJsonFileName);
+    //bool res = metadata.loadMetadata();
 
-    return res; //a.exec();
+    if(metadata.isLoaded) {
+        qDebug("Tissue Sameple - ID: %s", qPrintable(metadata.tissueSample.id));
+        qDebug("Sectioning - Knife Edge: %s", qPrintable(metadata.sectioning.knifeEdge));
+    }
+    else {
+        qDebug("Failed to load a metadata.");
+    }
+    return true; //res; //a.exec();
 }

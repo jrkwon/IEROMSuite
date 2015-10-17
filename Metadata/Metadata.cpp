@@ -45,6 +45,8 @@ Metadata::Metadata(QString basePath, QString metadataJsonFileName)
 {
     this->basePath = basePath;
     this->metadataJsonFileName = metadataJsonFileName;
+
+    isLoaded = loadMetadata();
 }
 
 bool Metadata::loadMetadata()

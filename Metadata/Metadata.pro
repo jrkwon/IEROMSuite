@@ -16,11 +16,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
+    Metadata.cpp \
     ../Settings/Settings.cpp \
-    Metadata.cpp
+    ../Mission/Mission.cpp
 
 HEADERS += \
+    Metadata.h \
     ../Settings/Settings.h \
-    Metadata.h
+    ../Mission/Mission.h
 
-INCLUDEPATH += $$PWD/../Settings
+INCLUDEPATH += $$PWD/../Settings \
+    $$PWD/../Mission

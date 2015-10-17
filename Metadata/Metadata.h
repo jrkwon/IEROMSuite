@@ -83,10 +83,13 @@ class Metadata
 public:
     Metadata(QString basePath, QString metadataJsonFileName);
 
+private:
     bool loadMetadata();
     void read(const QJsonObject &json);
 
 public:
+    bool isLoaded;
+
     QString basePath; // where the Metadata.json is
     QString metadataJsonFileName;
     TissueSample tissueSample;
