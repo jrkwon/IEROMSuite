@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 
 #include "Metadata.h"
+#include "Mission.h"
 
 IEROM_NAMESPACE_START
 
@@ -41,10 +42,13 @@ void Sectioning::read(const QJsonObject &json)
     this->rangeZ.maxZ = rzJsonObj["MaxZ"].toDouble();
 }
 
-Metadata::Metadata(QString basePath, QString metadataJsonFileName)
+Metadata::Metadata()
 {
-    this->basePath = basePath;
-    this->metadataJsonFileName = metadataJsonFileName;
+    settings::Settings settings;
+    Mission mission;
+
+    this->basePath = mission.rawImageDirectory;
+    this->metadataJsonFileName = settings.processInfo.detector.metadataJsonFileName;
 
     isLoaded = loadMetadata();
 }

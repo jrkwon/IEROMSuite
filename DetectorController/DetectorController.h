@@ -25,6 +25,11 @@ public:
     QProcess process;
     bool isFinished;
     bool isProcessError;
+
+    //////////////////////
+    /// Data section
+    int columnNumber;
+    QString destinationDirectory;
 };
 
 IEROM_NAMESPACE_END

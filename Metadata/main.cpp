@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include "Settings.h"
 #include "Metadata.h"
 #include "Mission.h"
 
@@ -12,12 +13,11 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    ierom::settings::Settings settings;
-    settings.loadSettings();
+    //ierom::settings::Settings settings;
 
-    QString metadataJsonFileName = settings.processInfo.detector.metadataJsonFileName;
-    ierom::Mission mission;
-    ierom::Metadata metadata(mission.rawImageDirectory, metadataJsonFileName);
+    //QString metadataJsonFileName = settings.processInfo.detector.metadataJsonFileName;
+    //ierom::Mission mission;
+    ierom::Metadata metadata;//mission.rawImageDirectory, metadataJsonFileName);
     //bool res = metadata.loadMetadata();
 
     if(metadata.isLoaded) {

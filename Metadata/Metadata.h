@@ -81,7 +81,7 @@ public:
 class Metadata
 {
 public:
-    Metadata(QString basePath, QString metadataJsonFileName);
+    Metadata();
 
 private:
     bool loadMetadata();
