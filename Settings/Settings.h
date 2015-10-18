@@ -50,7 +50,7 @@ public:
     void read(const QJsonObject &json);
 
 public:
-    QString sourceImageFileExtension;
+    //QString sourceImageFileExtension;
     quint8 backgroundColor;
     quint8 minPixelIntensity;
     quint8 maxPixelIntensity;
@@ -176,6 +176,8 @@ private:
     void read(const QJsonObject &json);
 
 public:
+    QString suiteDir;
+
     SystemInfo systemInfo;
     RawImageProp rawImageProp;
     DirectoryName directoryName;

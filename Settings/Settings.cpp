@@ -19,7 +19,7 @@ void SystemInfo::read(const QJsonObject &json)
 
 void RawImageProp::read(const QJsonObject &json)
 {
-    sourceImageFileExtension = json["SourceImageFileExtension"].toString();
+    //sourceImageFileExtension = json["SourceImageFileExtension"].toString();
     backgroundColor = json["BackgroundColor"].toInt();
     minPixelIntensity = json["MinPixelIntensity"].toInt();
     maxPixelIntensity = json["MaxPixelIntensity"].toInt();
@@ -139,14 +139,17 @@ void MultiLayerComposer::read(const QJsonObject &json)
 
 Settings::Settings()
 {
-    isLoaded = loadSettings();
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    this->suiteDir = QDir::cleanPath(env.value(kIEROMSuitePathEnv));
+
+    this->isLoaded = loadSettings();
 }
 
 bool Settings::loadSettings()
 {
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString suiteDir = env.value(kIEROMSuitePathEnv);
-    QString jsonFilePath = QDir::cleanPath(suiteDir + kSettingsJsonFileRelPath);
+//    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+//    QString suiteDir = env.value(kIEROMSuitePathEnv);
+    QString jsonFilePath = QDir::cleanPath(this->suiteDir + kSettingsJsonFileRelPath);
     //qDebug() << jsonFilePath;
 
     QFile settingsFile(jsonFilePath);
@@ -171,6 +174,7 @@ void Settings::read(const QJsonObject &json)
     directoryName.read(ierom["DirectoryName"].toObject());
     processInfo.read(ierom["ProcessInfo"].toObject());
 }
+
 
 SETTINGS_NAMESPACE_END
 

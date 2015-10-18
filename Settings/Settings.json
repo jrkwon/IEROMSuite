@@ -9,7 +9,6 @@
       "Debug": true
     },
     "RawImageProp": {
-      "SourceImageFileExtension": ".jpg",
       "BackgroundColor": 255,
       "MinPixelIntensity": 0,
       "MaxPixelIntensity": 255
