@@ -92,6 +92,9 @@ public:
 
     QString basePath; // where the Metadata.json is
     QString metadataJsonFileName;
+
+    // From json file
+    QString imageFileExtension;
     TissueSample tissueSample;
     Sectioning sectioning;
 };

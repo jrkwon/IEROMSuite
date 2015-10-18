@@ -74,6 +74,7 @@ bool Metadata::loadMetadata()
 
 void Metadata::read(const QJsonObject &json)
 {
+    this->imageFileExtension = json["Image File Extension"].toString();
     QJsonObject tsJson = json["Tissue Sample"].toObject();
     this->tissueSample.read(tsJson);
 
