@@ -9,7 +9,7 @@
 // 3. Template file path name
 // 4. Shared memory key name
 // 5. Options
-//    s: [silence] no message displayed
+//    -v: [verbose] message displayed
 
 //////////////////////////////////////////////////////////////////////////////
 // Note:
