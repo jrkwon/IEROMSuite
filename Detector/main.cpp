@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 #include <QFileInfo>
-#include "SliceAreaDetector.h"
+#include "Detector.h"
 
 // ---------------------------------
 // argv
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         isVerbose = (args[kLastArgIndex] == "-v") ? true : false;
     }
     detector.setVerbose(isVerbose);
-    ierom::Coord sliceStartPosition;
+    QPoint sliceStartPosition;
     detector.getSliceAreaPosition(sliceStartPosition);
 
     return true; //a.exec(); // sliceStartPosition.x; //a.exec();

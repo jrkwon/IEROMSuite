@@ -1,7 +1,8 @@
-#ifndef SLICEAREADETECTOR_H
-#define SLICEEAREADETECTOR_H
+#ifndef DETECTOR_H
+#define DETECTOR_H
 
 #include <QSharedMemory>
+#include <QPoint>
 #include "Settings.h"
 
 ///////////////////////////
@@ -34,11 +35,6 @@ struct Params
     quint8 maxPixelValue;
 };
 
-struct Coord
-{
-    int x, y;
-};
-
 struct SliceRightEdgeTemplate
 {
     QString name;
@@ -52,7 +48,7 @@ public:
     SliceAreaDetector(QString rawFilePath, int sliceWidth, QString templateFilePath, QString sharedMemoryKeyName);
 
     void setVerbose(bool isVerbose);
-    Result getSliceAreaPosition(Coord& coord);
+    Result getSliceAreaPosition(QPoint& point);
 
 private:
     void reLight(int direction,
@@ -61,7 +57,7 @@ private:
     int sumOfAbsoluteDifferences(
             itk::ImageLinearConstIteratorWithIndex<ImageType> searchIt,
             itk::ImageLinearConstIteratorWithIndex<ImageType> templateIt);
-    void saveToSharedMemory(Coord sliceAreaPosition);
+    void saveToSharedMemory(QPoint sliceAreaPosition);
     void showProgress(int start, int end, int current);
     void displayMessage(QString message);
 
@@ -72,7 +68,7 @@ private:
     int sliceWidth;
     SliceRightEdgeTemplate sliceRightEdgeTemplate;
     QString sharedMemoryKeyName;
-    Coord sliceAreaPosition;
+    QPoint sliceAreaPosition;
     bool isVerbose;
     Params params;
     QSharedMemory sharedMemory;
@@ -80,4 +76,4 @@ private:
 
 IEROM_NAMESPACE_END
 
-#endif // SLICEAREADETECTOR_H
+#endif // DETECTOR_H

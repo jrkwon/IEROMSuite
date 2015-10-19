@@ -16,10 +16,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    SliceAreaDetector.cpp
+    Detector.cpp
 
 HEADERS += \
-    SliceAreaDetector.h
+    Detector.h
 
 win32: LIBS += -L$$(ITK_DIR)/lib/ \
                -llibITKBiasCorrection-4.8 \

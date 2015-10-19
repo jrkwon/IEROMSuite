@@ -1,4 +1,4 @@
-#include "SliceAreaDetector.h"
+#include "Detector.h"
 #include <QBuffer>
 #include <QDataStream>
 #include <QFileInfo>
@@ -13,8 +13,8 @@ SliceAreaDetector::SliceAreaDetector(QString rawFilePath, int sliceWidth,
     this->sliceRightEdgeTemplate.name = templateFilePath;
     this->sharedMemoryKeyName = sharedMemoryKeyName;
 
-    this->sliceAreaPosition.x = -1;
-    this->sliceAreaPosition.y = -1;
+    this->sliceAreaPosition.setX(-1);
+    this->sliceAreaPosition.setY(-1);
     this->isVerbose = true;
 
     this->params.maxIllumination = 0xFF;
@@ -125,7 +125,7 @@ ImageType::ConstPointer SliceAreaDetector::readFile(QString filePath)
     return reader->GetOutput();
 }
 
-Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
+Result SliceAreaDetector::getSliceAreaPosition(QPoint& sliceAreaPosition)
 {
     //    if(QFile::exists(strSrcImage) != true)
     //    {
@@ -262,9 +262,9 @@ Result SliceAreaDetector::getSliceAreaPosition(Coord& sliceAreaPosition)
 
     //displayMessage(QString("startX: %1").arg(startX));
 
-    sliceAreaPosition.x = startX;
+    sliceAreaPosition.setX(startX);
     // TODO: registration for y axis may be required.
-    sliceAreaPosition.y = 0; // always 0 for now.
+    sliceAreaPosition.setY(0); // always 0 for now.
 
     saveToSharedMemory(sliceAreaPosition);
 
@@ -289,7 +289,7 @@ void SliceAreaDetector::showProgress(int start, int end, int current)
     std::cout << "\r" << msg.toStdString().c_str();
 }
 
-void SliceAreaDetector::saveToSharedMemory(Coord sliceAreaPosition)
+void SliceAreaDetector::saveToSharedMemory(QPoint sliceAreaPosition)
 {
     // -----------------------------------------------------------------------
     // Note: QSharedMemory doesn't work without manually setting a key in
@@ -302,8 +302,8 @@ void SliceAreaDetector::saveToSharedMemory(Coord sliceAreaPosition)
     QBuffer buffer;
     buffer.open(QBuffer::ReadWrite);
     QDataStream out(&buffer);
-    out << sliceAreaPosition.x;
-    out << sliceAreaPosition.y;
+    out << sliceAreaPosition.x();
+    out << sliceAreaPosition.y();
 
     int size = buffer.size();
 
@@ -319,10 +319,10 @@ void SliceAreaDetector::saveToSharedMemory(Coord sliceAreaPosition)
     sharedMemory.unlock();
 
     QString msg;
-    if(sliceAreaPosition.x == -1 || sliceAreaPosition.y == -1)
+    if(sliceAreaPosition.x() == -1 || sliceAreaPosition.y() == -1)
         msg = QString("\n\tNo slice area is found.\n");
     else
-        msg = QString("\n\tx: %1, y: %2\n").arg(sliceAreaPosition.x).arg(sliceAreaPosition.y);
+        msg = QString("\n\tx: %1, y: %2\n").arg(sliceAreaPosition.x()).arg(sliceAreaPosition.y());
     displayMessage(msg);
 }
 
