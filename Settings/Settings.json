@@ -41,7 +41,7 @@
           "Major": 1,
           "Minor": 0
         },
-        "Name": "Detector",
+        "Name": "SliceAreaDetector",
         "MetadataJsonFileName": "Metadata.json",
         "TemplateFileName": "Template",
         "ColumnNumberDigits": 5,
@@ -52,7 +52,7 @@
           "Major": 1,
           "Minor": 0
         },
-        "Name": "Corrector",
+        "Name": "SliceAreaCorrector",
         "ImageChuckThreshold": 10,
         "MaxRightEdgeDifference": 15,
         "MaxConsecutiveWrongImages": 10,
@@ -64,14 +64,14 @@
           "Major": 1,
           "Minor": 0
         },
-        "Name": "Cropper"
+        "Name": "SliceAreaCropper"
       },
       "IntensityNormalizer": {
         "Version": {
           "Major": 1,
           "Minor": 0
         },
-        "Name": "Normalizer",
+        "Name": "IntensityNormalizer",
         "NormalizedMinIntensity": 0,
         "NormalizedMaxIntensity": 140
       },
@@ -80,7 +80,7 @@
           "Major": 1,
           "Minor": 0
         },
-        "Name": "Sticher",
+        "Name": "SliceSticher",
         "InfoFileName": "MergerInfo.txt",
         "InfoFormat": "i%05dz%.4f.txt",
         "InvertImageFlag": "i:"
@@ -97,7 +97,7 @@
           "Major": 1,
           "Minor": 0
         },
-        "Name": "Composer",
+        "Name": "MultiLayerComposer",
         "IndexedImageFileNameFormat": "iNNNNN",
         "ZPosFileNameFormat": "Z.ZZZZ",
         "ComposerUnitDepth": 5
