@@ -32,5 +32,5 @@ HEADERS += \
 INCLUDEPATH += $$PWD/../Settings \
     $$PWD/../Metadata \
     $$PWD/../Mission \
-    $$PWD/../Detector
+    $$PWD/../SliceAreaDetector
 

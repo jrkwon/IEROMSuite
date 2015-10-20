@@ -3,38 +3,14 @@
 #include <QDir>
 #include <QTextStream>
 #include <QBuffer>
+#include <QPoint>
 #include <iostream>
 
 #include "SliceAreaDetectorController.h"
-#include "SliceAreaDetector.h"
+#include "SliceAreaPositionWriter.h"
 #include "Settings.h"
 #include "Metadata.h"
 #include "Mission.h"
-
-ierom::QPoint loadFromSharedMemory()
-{
-    if (!sharedMemory.attach()) {
-        std::cout << "Unable to attach to shared memory segment." << std::endl;
-        return;
-    }
-
-    QBuffer buffer;
-    QDataStream in(&buffer);
-    ierom::QPoint sliceAreaPosition;
-
-    sharedMemory.lock();
-    buffer.setData((char*)sharedMemory.constData(), sharedMemory.size());
-    buffer.open(QBuffer::ReadOnly);
-    in >> sliceAreaPosition.x;
-    in >> sliceAreaPosition.y;
-
-    sharedMemory.unlock();
-
-    sharedMemory.detach();
-    ui.label->setPixmap(QPixmap::fromImage(image));
-
-    return sliceAreaPosition;
-}
 
 //////////////////////////////////////////////////////////////////////////////
 /// \brief main
@@ -120,7 +96,16 @@ int main(int argc, char *argv[])
     std::cout << "Col: " << qPrintable(formattedColumnNumber) << std::endl;
     std::cout << "# of files: " << imageFileList.count() << std::endl;
 
-    ierom::QPoint sliceAreaPosition;
+    QPoint sliceAreaPosition;
+    QString sliceAreaFileName = settings.suiteDir + "/" + settings.processInfo.globalSharedMemoryKey;
+
+    QString detectedAreaPath = QString("%1%2")
+            .arg(detectorController.destinationDirectory)
+            .arg(settings.directoryName.detected);
+    if(!QDir(detectedAreaPath).exists())
+        QDir().mkdir(detectedAreaPath);
+    QString detectedAreaFilePath = detectedAreaPath + "/" + formattedColumnNumber + ".txt";
+    ierom::SliceAreaPositionWriter sliceAreaPositionWriter(detectedAreaFilePath);
     for (int i = 0; i < imageFileList.count(); i++) {
         imageFileName = QString("%1/%2")
                             .arg(rawImagePathWithColumnNumber)
@@ -129,7 +114,7 @@ int main(int argc, char *argv[])
         QStringList detectorArgs;
         detectorArgs << imageFileName
                      << QString::number(metadata.sectioning.sliceSize.width)
-                     << templateFilePath << settings.processInfo.globalSharedMemoryKey << "-v";
+                     << templateFilePath << sliceAreaFileName << "-v";
 
         detectorController.process.start(detectorProcessName, detectorArgs);
         detectorController.process.waitForFinished();
@@ -137,13 +122,18 @@ int main(int argc, char *argv[])
         if(detectorController.isProcessError)
             break;
 
-        sliceAreaPosition = loadFromSharedMemory();
+        sliceAreaPosition = detectorController.loadSliceAreaPosition(sliceAreaFileName);
         std::cout << i+1 << "/" << imageFileList.count() << ": " << qPrintable(imageFileList[i])
-                  << ": x = " << sliceAreaPosition.x
-                  << ": y = " << sliceAreaPosition.y << std::endl;
+                  << std::endl
+                  << "x = " << sliceAreaPosition.x()
+                  << "\t y = " << sliceAreaPosition.y() << std::endl;
 
-    }
-
-
+        ierom::SliceAreaInfo sliceAreaInfo;
+        sliceAreaInfo.fileName = imageFileList[i];
+        sliceAreaInfo.sliceArea = sliceAreaPosition;
+        sliceAreaInfo.valid = (sliceAreaPosition.x() != -1) ? true : false;
+        sliceAreaPositionWriter.sliceAreas.append(sliceAreaInfo);
+    } 
+    sliceAreaPositionWriter.write();
     return true; //a.exec();
 }
