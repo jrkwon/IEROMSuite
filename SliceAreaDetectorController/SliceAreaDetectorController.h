@@ -23,6 +23,11 @@ public slots:
     void processError(QProcess::ProcessError error);
 
 public:
+    /////////////////////
+    //QPoint loadFromSharedMemory();
+    QPoint loadSliceAreaPosition(QString fileName);
+
+public:
     QProcess process;
     bool isFinished;
     bool isProcessError;

@@ -7,7 +7,7 @@
 // 1. Raw image file path name
 // 2. Slice area width
 // 3. Template file path name
-// 4. Shared memory key name
+// 4. Filename where a detected area positin will be saved
 // 5. Options
 //    -v: [verbose] message displayed
 
@@ -34,22 +34,21 @@ int main(int argc, char *argv[])
 
         QFileInfo pathInfo(args[0]);
         QString fileName(pathInfo.completeBaseName());
-        std::cout << qPrintable(fileName) << " ImageFileName SliceWidth TemplateFilename SharedMemoryKeyName [-v]" << std::endl;
+        std::cout << qPrintable(fileName) << " ImageFileName SliceWidth TemplateFilename detectedAreaFileName [-v]" << std::endl;
         return -1;
     }
     QString rawImageFileName = args[1];
     int sliceWidth = args[2].toInt();
     QString templateName = args[3];
-    QString sharedMemoryKeyName = args[4];
+    QString detectedAreaFileName = args[4];
 
-    ierom::SliceAreaDetector detector(rawImageFileName, sliceWidth, templateName, sharedMemoryKeyName);
+    ierom::SliceAreaDetector detector(rawImageFileName, sliceWidth, templateName, detectedAreaFileName);
     bool isVerbose = false;
     if(args.size() >= (kLastArgIndex+1)) {
         isVerbose = (args[kLastArgIndex] == "-v") ? true : false;
     }
     detector.setVerbose(isVerbose);
-    QPoint sliceStartPosition;
-    detector.getSliceAreaPosition(sliceStartPosition);
+    detector.getSliceAreaPositionAndSaveIt();
 
     return true; //a.exec(); // sliceStartPosition.x; //a.exec();
 }

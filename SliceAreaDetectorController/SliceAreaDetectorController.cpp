@@ -1,4 +1,8 @@
 #include "SliceAreaDetectorController.h"
+#include <QPoint>
+#include <QBuffer>
+#include <QDataStream>
+#include <QFile>
 #include <iostream>
 
 IEROM_NAMESPACE_START
@@ -35,20 +39,6 @@ void DetectorController::processFinished(int exitCode, QProcess::ExitStatus exit
         isProcessError = true;
     }
 
-    qDebug() << "exitCode is " << exitCode << ".";
-//    else {
-//        switch(exitCode) {
-//        case -1:
-//            qDebug() << "Detection failed.";
-//            break;
-//        case 0:
-//            qDebug() << "Error occurred.";
-//            break;
-//        default:
-//            ////qDebug() << "Detection succeeded.";
-//            //startX = exitCode;
-//        }
-//    }
     isFinished = true;
 }
 
@@ -60,5 +50,46 @@ void DetectorController::processError(QProcess::ProcessError error)
     }
     isProcessError = isFinished = true;
 }
+
+QPoint DetectorController::loadSliceAreaPosition(QString fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return QPoint(-1, -1);
+
+    QTextStream in(&file);
+    int x, y;
+    in >> x >> y;
+    QPoint sliceAreaPosition(x, y);
+    return sliceAreaPosition;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//QPoint DetectorController::loadFromSharedMemory()
+//{
+//    QPoint sliceAreaPosition(-1, -1);
+//    if (!sharedMemory.attach()) {
+//        std::cout << "Unable to attach to shared memory segment." << std::endl;
+//        return sliceAreaPosition;
+//    }
+
+//    QBuffer buffer;
+//    QDataStream in(&buffer);
+//    int x, y;
+
+//    sharedMemory.lock();
+//    buffer.setData((char*)sharedMemory.constData(), sharedMemory.size());
+//    buffer.open(QBuffer::ReadOnly);
+//    in >> x;
+//    in >> y;
+//    sliceAreaPosition.setX(x);
+//    sliceAreaPosition.setY(y);
+
+//    sharedMemory.unlock();
+
+//    sharedMemory.detach();
+
+//    return sliceAreaPosition;
+//}
 
 IEROM_NAMESPACE_END

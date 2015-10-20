@@ -45,10 +45,10 @@ struct SliceRightEdgeTemplate
 class SliceAreaDetector
 {
 public:
-    SliceAreaDetector(QString rawFilePath, int sliceWidth, QString templateFilePath, QString sharedMemoryKeyName);
+    SliceAreaDetector(QString rawFilePath, int sliceWidth, QString templateFilePath, QString detectedAreaFileName);
 
     void setVerbose(bool isVerbose);
-    Result getSliceAreaPosition(QPoint& point);
+    Result getSliceAreaPositionAndSaveIt();
 
 private:
     void reLight(int direction,
@@ -57,7 +57,8 @@ private:
     int sumOfAbsoluteDifferences(
             itk::ImageLinearConstIteratorWithIndex<ImageType> searchIt,
             itk::ImageLinearConstIteratorWithIndex<ImageType> templateIt);
-    void saveToSharedMemory(QPoint sliceAreaPosition);
+    //void saveToSharedMemory(QPoint sliceAreaPosition);
+    void saveSliceAreaPosition();
     void showProgress(int start, int end, int current);
     void displayMessage(QString message);
 
@@ -67,11 +68,11 @@ private:
     QString rawFilePath;
     int sliceWidth;
     SliceRightEdgeTemplate sliceRightEdgeTemplate;
-    QString sharedMemoryKeyName;
+    QString detectedAreaFileName;
     QPoint sliceAreaPosition;
     bool isVerbose;
     Params params;
-    QSharedMemory sharedMemory;
+    //QSharedMemory sharedMemory;
 };
 
 IEROM_NAMESPACE_END
