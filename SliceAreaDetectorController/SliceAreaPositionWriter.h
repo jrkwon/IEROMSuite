@@ -11,7 +11,7 @@ struct SliceAreaInfo
 {
     QString fileName;
     QPoint sliceArea;
-    bool valid;
+    //bool valid;
 };
 
 class SliceAreaPositionWriter
@@ -24,6 +24,8 @@ public:
 public:
     QVector<SliceAreaInfo> sliceAreas;
     QString fileName;
+
+//    int numberOfSlicesFromExistingFile;
 };
 
 IEROM_NAMESPACE_END

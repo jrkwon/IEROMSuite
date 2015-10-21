@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
     // create the destination directory name using ID name from Metatdata
     detectorController.destinationDirectory
-            = QString("%1/%2/").arg(mission.processedImageDirectory).arg(metadata.tissueSample.id);
+            = QString("%1/%2").arg(mission.processedImageDirectory).arg(metadata.tissueSample.id);
     if(!QDir(detectorController.destinationDirectory).exists())
         QDir().mkdir(detectorController.destinationDirectory);
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     /////////////////
     // Template file path
-    QString templateFilePath = QString("%1%2%3")
+    QString templateFilePath = QString("%1/%2%3")
             .arg(detectorController.destinationDirectory)
             .arg(settings.processInfo.detector.templateFileName)
             .arg(metadata.imageFileExtension);
@@ -99,14 +99,15 @@ int main(int argc, char *argv[])
     QPoint sliceAreaPosition;
     QString sliceAreaFileName = settings.suiteDir + "/" + settings.processInfo.globalSharedMemoryKey;
 
-    QString detectedAreaPath = QString("%1%2")
+    QString detectedAreaPath = QString("%1/%2")
             .arg(detectorController.destinationDirectory)
             .arg(settings.directoryName.detected);
     if(!QDir(detectedAreaPath).exists())
         QDir().mkdir(detectedAreaPath);
     QString detectedAreaFilePath = detectedAreaPath + "/" + formattedColumnNumber + ".txt";
     ierom::SliceAreaPositionWriter sliceAreaPositionWriter(detectedAreaFilePath);
-    for (int i = 0; i < imageFileList.count(); i++) {
+
+    for (int i = sliceAreaPositionWriter.sliceAreas.size(); i < imageFileList.count(); i++) {
         imageFileName = QString("%1/%2")
                             .arg(rawImagePathWithColumnNumber)
                             .arg(imageFileList[i]);
@@ -131,9 +132,11 @@ int main(int argc, char *argv[])
         ierom::SliceAreaInfo sliceAreaInfo;
         sliceAreaInfo.fileName = imageFileList[i];
         sliceAreaInfo.sliceArea = sliceAreaPosition;
-        sliceAreaInfo.valid = (sliceAreaPosition.x() != -1) ? true : false;
+        //sliceAreaInfo.valid = (sliceAreaPosition.x() != -1) ? true : false;
         sliceAreaPositionWriter.sliceAreas.append(sliceAreaInfo);
-    } 
-    sliceAreaPositionWriter.write();
+
+        sliceAreaPositionWriter.write();
+    }
+//    sliceAreaPositionWriter.write();
     return true; //a.exec();
 }
