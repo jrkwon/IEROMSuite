@@ -4,6 +4,8 @@
 #include <QTextStream>
 #include <QBuffer>
 #include <QPoint>
+#include <QElapsedTimer>
+
 #include <iostream>
 
 #include "SliceAreaDetectorController.h"
@@ -117,8 +119,11 @@ int main(int argc, char *argv[])
                      << QString::number(metadata.sectioning.sliceSize.width)
                      << templateFilePath << sliceAreaFileName << "-v";
 
+        QElapsedTimer timer;
+        timer.start();
         detectorController.process.start(detectorProcessName, detectorArgs);
         detectorController.process.waitForFinished();
+        float elapsedInSec = timer.elapsed() / 1000.0;
 
         if(detectorController.isProcessError)
             break;
@@ -127,7 +132,8 @@ int main(int argc, char *argv[])
         std::cout << i+1 << "/" << imageFileList.count() << ": " << qPrintable(imageFileList[i])
                   << std::endl
                   << "x = " << sliceAreaPosition.x()
-                  << "\t y = " << sliceAreaPosition.y() << std::endl;
+                  << "\t y = " << sliceAreaPosition.y()
+                  << "\t elpased: " << elapsedInSec << " sec" << std::endl;
 
         ierom::SliceAreaInfo sliceAreaInfo;
         sliceAreaInfo.fileName = imageFileList[i];
