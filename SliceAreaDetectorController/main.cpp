@@ -107,7 +107,8 @@ int main(int argc, char *argv[])
     if(!QDir(detectedAreaPath).exists())
         QDir().mkdir(detectedAreaPath);
     QString detectedAreaFilePath = detectedAreaPath + "/" + formattedColumnNumber + ".txt";
-    ierom::SliceAreaPositionWriter sliceAreaPositionWriter(detectedAreaFilePath);
+    QString detectedAreaJsonFilePath = detectedAreaPath + "/" + formattedColumnNumber + ".json";
+    ierom::SliceAreaPositionWriter sliceAreaPositionWriter(detectedAreaFilePath, detectedAreaJsonFilePath);
 
     for (int i = sliceAreaPositionWriter.sliceAreas.size(); i < imageFileList.count(); i++) {
         imageFileName = QString("%1/%2")
@@ -144,5 +145,8 @@ int main(int argc, char *argv[])
         sliceAreaPositionWriter.write();
     }
 //    sliceAreaPositionWriter.write();
+
+    sliceAreaPositionWriter.writeJson();
+
     return true; //a.exec();
 }

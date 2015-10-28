@@ -4,27 +4,33 @@
 #include "Settings.h"
 #include <QString>
 #include <QPoint>
+#include <QJsonObject>
 
 IEROM_NAMESPACE_START
 
-struct SliceAreaInfo
+class SliceAreaInfo
 {
+public:
     QString fileName;
     QPoint sliceArea;
     //bool valid;
+
+public:
+    void write(QJsonObject &json) const;
 };
 
 class SliceAreaPositionWriter
 {
 public:
-    SliceAreaPositionWriter(QString fileName);
+    SliceAreaPositionWriter(QString textFileName, QString jsonFileName);
 
     bool write();
+    bool writeJson();
 
 public:
     QVector<SliceAreaInfo> sliceAreas;
-    QString fileName;
-
+    QString textFileName;
+    QString jsonFileName;
 //    int numberOfSlicesFromExistingFile;
 };
 

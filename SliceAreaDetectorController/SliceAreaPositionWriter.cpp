@@ -1,18 +1,30 @@
 #include "SliceAreaPositionWriter.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QTextStream>
 #include <QVectorIterator>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 IEROM_NAMESPACE_START
 
-SliceAreaPositionWriter::SliceAreaPositionWriter(QString fileName)
+void SliceAreaInfo::write(QJsonObject &json) const
 {
-    this->fileName = fileName;
+    json["Name"] = this->fileName;
+    json["StartX"] = this->sliceArea.x();
+    json["StartY"] = this->sliceArea.y();
+}
+
+SliceAreaPositionWriter::SliceAreaPositionWriter(QString textFileName, QString jsonFileName)
+{
+    this->textFileName = textFileName;
+    this->jsonFileName = jsonFileName;
 //    this->numberOfSlicesFromExistingFile = 0;
 
     SliceAreaInfo sliceAreaInfo;
-    QFile file(this->fileName);
+    QFile file(this->textFileName);
     if(file.exists()) {
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         QTextStream in(&file);
@@ -34,13 +46,13 @@ SliceAreaPositionWriter::SliceAreaPositionWriter(QString fileName)
 
 bool SliceAreaPositionWriter::write()
 {
-    QFile file(this->fileName);
+    QFile file(this->textFileName);
     QTextStream out(&file);
 
     if(!file.exists()) {
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
             qDebug() << "Error: Cannot write file "
-                     << qPrintable(fileName) << ": "
+                     << qPrintable(textFileName) << ": "
                      << qPrintable(file.errorString()) << "\n";
             return false;
         }
@@ -49,7 +61,7 @@ bool SliceAreaPositionWriter::write()
     else {
         if(!file.open(QIODevice::Append | QIODevice::Text)) {
             qDebug() << "Error: Cannot open file for appending "
-                     << qPrintable(fileName) << ": "
+                     << qPrintable(textFileName) << ": "
                      << qPrintable(file.errorString()) << "\n";
             return false;
         }
@@ -68,6 +80,36 @@ bool SliceAreaPositionWriter::write()
 //    }
 
     file.close();
+    return true;
+}
+
+bool SliceAreaPositionWriter::writeJson()
+{
+    QFile file(this->jsonFileName);
+
+    // Always rewritten since wirteJson executes only once
+    // when the slice detection task completes
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Error: Cannot open file for appending "
+                 << qPrintable(jsonFileName) << ": "
+                 << qPrintable(file.errorString()) << "\n";
+        return false;
+    }
+
+    QJsonObject json;
+    QJsonArray jsonArray;
+
+    foreach(const SliceAreaInfo area, sliceAreas) {
+        QJsonObject obj;
+        area.write(obj);
+        jsonArray.append(obj);
+    }
+    json["Slice Areas"] = jsonArray;
+
+    QJsonDocument doc(json);
+    file.write(doc.toJson());
+
+//    file.close();
     return true;
 }
 
